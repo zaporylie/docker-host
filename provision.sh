@@ -31,3 +31,7 @@ fi
 # This command will keep nginx proxy up and running
 docker run --name proxy -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock -t jwilder/nginx-proxy > /dev/null 2>&1
 docker start proxy > /dev/null 2>&1
+
+# This command will docker web ui up and running
+docker run --name webui -d -p 9000:81 --privileged -v /var/run/docker.sock:/var/run/docker.sock dockerui/dockerui > /dev/null 2>&1
+docker start webui > /dev/null 2>&1

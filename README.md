@@ -28,6 +28,13 @@ I still recommend to use git, vim or other tools on your host - it
 is probably more convenient. I believe you will use vagrant only to run 
 `docker-compose up`, eventually manage your images/containers.
 
+## Features
+
+This box comes with two useful container:
+
+1. [nginx-proxy](https://github.com/jwilder/nginx-proxy) by jwilder (user VIRTUAL_HOST env flag)
+1. [dockerui](https://github.com/crosbymichael/dockerui) by crosbymichael (visit docker.dev:81)
+
 ## Known issues
 
 * To deal with file permissions we use bindfs (so first mount nfs to tmp 
