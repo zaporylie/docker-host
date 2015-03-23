@@ -20,9 +20,20 @@ vagrant box. **Finally - simplest solutions are the best!**
 
 ## Instalation
 
-1. To make it easy keep projects you are working on in this directory. You can move it to another place but set correct path to sync folder in Vagrantfile
-2. `vagrant up` then `vagrant ssh` from anywhere inside this directory.
-3. `docker ps` you can start right away!
+Use shortcut:
+````bash
+curl -s https://raw.githubusercontent.com/zaporylie/docker-host/master/install.sh | sudo sh
+
+# sudo is used to type password only once, and skip it when vagrant will mount 
+# folders with nfs
+````
+
+or follow this steps:
+
+1. Download and extract repository.
+1. To make it easy keep projects you are currently working on in this directory. You can move it to another place but set correct path to sync folder in Vagrantfile
+1. `vagrant up` then `vagrant ssh` from anywhere inside this directory.
+1. `docker ps` you can start right away!
 
 I still recommend to use git, vim or other tools on your host - it 
 is probably more convenient. I believe you will use vagrant only to run 
