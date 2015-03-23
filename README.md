@@ -22,10 +22,9 @@ vagrant box. **Finally - simplest solutions are the best!**
 
 Use shortcut:
 ````bash
-curl -s https://raw.githubusercontent.com/zaporylie/docker-host/master/install.sh | sudo sh
+curl -s https://raw.githubusercontent.com/zaporylie/docker-host/master/install.sh | sh
 
-# sudo is used to type password only once, and skip it when vagrant will mount 
-# folders with nfs
+# notice, that you'll be asked for sudo password during this vagrant up (for nfs folder share)
 ````
 
 or follow this steps:
