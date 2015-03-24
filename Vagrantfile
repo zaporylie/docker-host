@@ -8,6 +8,10 @@ Vagrant.require_version ">= 1.6.0"
 CLOUD_CONFIG_PATH = File.join(File.dirname(__FILE__), "user-data")
 CONFIG = File.join(File.dirname(__FILE__), "config.rb")
 
+if File.exist?(CONFIG)
+  require CONFIG
+end
+
 Vagrant.configure("2") do |config|
 
   # always use Vagrants insecure key
@@ -42,31 +46,25 @@ Vagrant.configure("2") do |config|
       end
 
       config.vm.provider :virtualbox do |vb|
-        vb.gui = vm_gui
-        vb.memory = vm_memory
-        vb.cpus = vm_cpus
+        vb.gui = $vm_gui
+        vb.memory = $vm_memory
+        vb.cpus = $vm_cpus
         vb.name = vm_name
       end
 
       ip = "172.17.9.#{i+100}"
       config.vm.network :private_network, ip: ip
 
-      # Uncomment below to enable NFS for sharing the host machine into the coreos-vagrant VM.
-      #config.vm.synced_folder ".", "/home/core/share", id: "core", :nfs => true, :mount_options => ['nolock,vers=3,udp']
       $shared_folders.each_with_index do |(host_folder, guest_folder), index|
-        config.vm.synced_folder host_folder.to_s, guest_folder.to_s, id: "core-share%02d" % index, nfs: true, mount_options: ['nolock,vers=3,udp']
+        config.vm.synced_folder host_folder.to_s, guest_folder.to_s, id: "core-share%02d" % index, :map_uid => 0, :map_gid => 0, :nfs => true, :mount_options => ['nolock,vers=3,udp']
       end
 
       if $share_home
-        config.vm.synced_folder ENV['HOME'], ENV['HOME'], id: "home", :nfs => true, :mount_options => ['nolock,vers=3,udp']
+        config.vm.synced_folder ENV['HOME'], ENV['HOME'], id: "home", :map_uid => 0, :map_gid => 0, :nfs => true, :mount_options => ['nolock,vers=3,udp']
       end
 
       if $share_current
-        config.vm.synced_folder ".", "/nfs-tmp", id: "current", :nfs => true, :mount_options => ['nolock,vers=3,udp']
-        config.bindfs.bind_folder "/nfs-tmp", "/home/core/projects",
-          mirror: "root,www-data,core",
-          group: "www-data",
-          perms: "u=u:g=g:o=o"
+        config.vm.synced_folder File.dirname(__FILE__), File.dirname(__FILE__), id: "current", :map_uid => 0, :map_gid => 0, :nfs => true, :mount_options => ['nolock,vers=3,udp']
       end
 
       if File.exist?(CLOUD_CONFIG_PATH)
