@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require 'fileutils'
+
 Vagrant.configure("2") do |config|
 
   # Use Ubuntu 14.04 as a base image.
@@ -15,6 +17,9 @@ Vagrant.configure("2") do |config|
   # This IP in private network should be free :)
   config.vm.network :private_network, ip: '10.254.254.254'
 
+  # Expose Docker port
+  config.vm.network "forwarded_port", guest: 2375, host: 2375, auto_correct: true
+
   # Main hostname (will be added to /etc/hosts on your host.
   config.vm.hostname = "docker.dev"
 
@@ -25,11 +30,25 @@ Vagrant.configure("2") do |config|
   config.ssh.forward_agent = true
 
   # Mount parent folder (to this file) to /home/vagrant/projects
-  config.vm.synced_folder "./", "/nfs-tmp",
-    id: "core",
-    :nfs => true,
+  #config.vm.synced_folder "./", "/nfs-tmp",
+  #  id: "core",
+  #  :nfs => true,
+  #  :map_uid => 0,
+  #  :map_gid => 0,
+  #  :mount_options => ['nolock,vers=3,udp']
+  #config.bindfs.bind_folder "/nfs-tmp", "/home/vagrant/projects",
+  #  mirror: "root,www-data,vagrant",
+  #  group: "www-data",
+  #  perms: "u=u:g=g:o=o"
+
+  config.vm.synced_folder ".", "/nfs-tmp", 
+    id: "current", 
+    :map_uid => 0, 
+    :map_gid => 0, 
+    :nfs => true, 
     :mount_options => ['nolock,vers=3,udp']
-  config.bindfs.bind_folder "/nfs-tmp", "/home/vagrant/projects",
+
+  config.bindfs.bind_folder "/nfs-tmp", File.dirname(__FILE__),
     mirror: "root,www-data,vagrant",
     group: "www-data",
     perms: "u=u:g=g:o=o"
@@ -38,6 +57,8 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "~/.ssh", "/ssh-tmp",
     id: "identity",
     :nfs => true,
+    :map_uid => 0,
+    :map_gid => 0,
     :mount_options => ['nolock,vers=3,udp']
   config.bindfs.bind_folder "/ssh-tmp", "/home/vagrant/identity",
     user: "root",
@@ -46,6 +67,7 @@ Vagrant.configure("2") do |config|
 
   # Set Virtual Box parameters
   config.vm.provider :virtualbox do |vb|
+    vb.gui = false
     vb.memory = 4096
     vb.cpus = 2
     vb.name = "docker_host"
