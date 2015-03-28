@@ -29,22 +29,8 @@ Vagrant.configure("2") do |config|
   # Forward ssh-agent
   config.ssh.forward_agent = true
 
-  # Mount parent folder (to this file) to /home/vagrant/projects
-  #config.vm.synced_folder "./", "/nfs-tmp",
-  #  id: "core",
-  #  :nfs => true,
-  #  :map_uid => 0,
-  #  :map_gid => 0,
-  #  :mount_options => ['nolock,vers=3,udp']
-  #config.bindfs.bind_folder "/nfs-tmp", "/home/vagrant/projects",
-  #  mirror: "root,www-data,vagrant",
-  #  group: "www-data",
-  #  perms: "u=u:g=g:o=o"
-
   config.vm.synced_folder ".", "/nfs-tmp", 
-    id: "current", 
-    :map_uid => 0, 
-    :map_gid => 0, 
+    id: "current",
     :nfs => true, 
     :mount_options => ['nolock,vers=3,udp']
 
@@ -57,8 +43,6 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "~/.ssh", "/ssh-tmp",
     id: "identity",
     :nfs => true,
-    :map_uid => 0,
-    :map_gid => 0,
     :mount_options => ['nolock,vers=3,udp']
   config.bindfs.bind_folder "/ssh-tmp", "/home/vagrant/identity",
     user: "root",
